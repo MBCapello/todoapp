@@ -1,25 +1,47 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState} from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+
+const App = () => {
+  const [value, setValue] = useState("");
+  
+  const ESCAPE_KEY = 27;
+  
+  const ENTER_KEY = 13;
+  
+  const onChange = (event) => {
+    setValue(event.target.value);
+  }
+  
+  const erase = () => {
+    setValue("");
+  }
+  
+  const submit = () => {
+    console.log('submit', value);
+    erase();
+  }
+  const onKeyDown = (event) => {
+    if(event.which === ENTER_KEY) {
+      submit();
+    } else if (event.which === ESCAPE_KEY){
+      erase();
+    }
+  }
+  
+  return(
+    <section id='app' className='container'>
+      <header>
+        <h1 className='tittle'>To-Do</h1>
       </header>
-    </div>
+      <section className='main'>
+        <input className='new-todo' 
+        placeholder='O que precisa ser feito?'
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown} />
+      </section>
+    </section>
   );
 }
-
 export default App;

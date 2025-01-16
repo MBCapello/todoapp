@@ -1,56 +1,35 @@
 import './App.css';
 import React, {useState} from 'react';
-import { MdDeleteForever } from "react-icons/md";
 import {v4 as uuidv4} from 'uuid';
 
-const App = () => {
-  
-  const [value, setValue] = useState("");
-  
-  const [lists, setLists] = useState([]);
-  
-  const ESCAPE_KEY = 27;
-  
-  const ENTER_KEY = 13;
-  
-  const onChange = (event) => {
-    setValue(event.target.value);
-  }
-  
-  const erase = () => {
-    setValue("");
-  }
-  
-  const submit = () => {
-    setLists ([
-      ...lists,
-      {
-        id:uuidv4(),
-        tittle: value,
-        checked: false
-      }
-    ])
-  
-    erase();
+import NewTodo from './components/NewTodo';
+import TodoList from './components/TodoList';
 
-  }
-  const onKeyDown = (event) => {
-    if(event.which === ENTER_KEY) {
-      submit();
-    } else if (event.which === ESCAPE_KEY){
-      erase();
-    }
-  }
-  
-const onToggle = (list) => {
-  setLists(
-    lists.map((obj) => (obj.id === list.id ? {...obj,
-    checked: !list.checked} : obj))
+
+const App = () => {
+
+const [todos, setTodo] = useState([]);
+
+const onToggle = (todo) => {
+  setTodo(
+    todos.map((obj) => (obj.id === todo.id ? {...obj,
+    checked: !todo.checked} : obj))
   );
 }
 
-const onRemove = (list) => {
-  setLists(lists.filter((obj) => obj.id !== list.id));
+const onRemove = (todo) => {
+  setTodo(todo.filter((obj) => obj.id !== todo.id));
+}
+  
+const onNewTodo = (value) => {
+  setTodo ([
+    ...todos,
+    {
+      id:uuidv4(),
+      tittle: value,
+      checked: false
+    }
+  ])
 }
 
   return(
@@ -59,26 +38,9 @@ const onRemove = (list) => {
         <h1 className='tittle'>To-Do</h1>
       </header>
       <section className='main'>
-        <input className='new-todo' 
-        placeholder='O que precisa ser feito?'
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown} />
-        <ul className='todo-list'>
-          {lists.map((list) => (
-              <li key={list.id.toString()}>
-                <span  
-                  className={`todo ${list.checked ? 'checked' : ''}`}
-                  onClick={() => onToggle(list)}
-                  role='button'
-                >{list.tittle}</span>
-                <button className='remove' 
-                  type='button'
-                  onClick={() => onRemove(list)}
-                ><MdDeleteForever size={28}/></button>
-              </li>
-            ))}
-        </ul>
+        <NewTodo onNewTodo={onNewTodo}/>
+        <TodoList todos={todos} onToggle={onToggle} onRemove={onRemove}/>
+        
       </section>
     </section>
   );
